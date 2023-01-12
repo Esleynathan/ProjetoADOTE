@@ -43,8 +43,6 @@ def cadastro(request):
 
 
 def logar(request):
-    if request.user.is_authenticate:
-        return redirect('/divulgar/novo_pet')
     if request.method == "GET":
         return render (request, 'login.html')
     elif request.method == "POST":
@@ -60,4 +58,8 @@ def logar(request):
         else:
             messages.add_message(request, constants.ERROR, 'Usuário ou senha incorretos')
             return render(request,'login.html')
-        
+
+
+def sair(request):
+    logout(request)
+    return redirect('/auth/login')
