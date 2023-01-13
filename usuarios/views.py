@@ -3,14 +3,15 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.messages import constants
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.shortcuts import redirect
+from django.contrib.auth import authenticate
 
 
 def cadastro(request):
-    if request.user.is_authenticate:
+    if request.user.is_authenticated:
         return redirect('/divulgar/novo_pet')
-    if request.method == "GET":
+    elif request.method == "GET":        
       return render(request, 'cadastro.html')
     elif request.method == "POST":
         nome = request.POST.get('nome')       
@@ -42,7 +43,9 @@ def cadastro(request):
             return render(request,'cadastro.html')
 
 
-def logar(request):
+def logar(request):    
+    if request.user.is_authenticated:
+        return redirect('/divulgar/novo_pet')
     if request.method == "GET":
         return render (request, 'login.html')
     elif request.method == "POST":
@@ -55,6 +58,7 @@ def logar(request):
         if user is not None:
             login(request, user)
             return redirect('/divulgar/novo_pet')
+         
         else:
             messages.add_message(request, constants.ERROR, 'Usuário ou senha incorretos')
             return render(request,'login.html')
