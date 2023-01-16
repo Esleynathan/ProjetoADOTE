@@ -15,11 +15,19 @@
 
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-2 bg-side-plataforma sidebar">
-                    <h2>ADO.TE</h2>
+                <div class="col-md-2 bg-side sidebar">
+                    <a style="text-decoration: none; color: white" href="{% url 'login' %}"><h2>ADO.TE</h2></a>
                     <hr>
-                    
-                    
+                    <a style="text-decoration: none; color: white" href="{% url 'listar_pets' %}">Adotar um Pet</a></br>
+                    <hr>
+                    <a style="text-decoration: none; color: white" href="{% url 'novo_pet' %}">Cadastrar Novo Pet</a></br></br>
+                    <a style="text-decoration: none; color: white" href="{% url 'seus_pets' %}">Visualizar seus Pets</a></br></br>
+                    <a style="text-decoration: none; color: white" href="{% url 'ver_pedido_adocao' %}">Verificar pedidos de adoção</a></br></br>                    
+                    <a style="text-decoration: none; color: white" href="{% url 'dashboard' %}">Dashboard</a></br></br>
+                    <hr>
+                    <a class="btn btn-outline-danger" href="{% url 'sair' %}">Logout</a></br>
+                    <hr>
+                                       
                 </div>
 
                 <div style="padding:60px" class="col-md">
