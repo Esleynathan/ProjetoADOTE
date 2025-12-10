@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import Tag, Raca, Pet
@@ -6,6 +6,8 @@ from .models import Tag, Raca, Pet
 from django.contrib import messages
 from django.contrib.messages import constants
 from django.shortcuts import redirect
+from django.db.models import Count
+from django.core.mail import send_mail
 from adotar.models import PedidoAdocao
 from django.views.decorators.csrf import csrf_exempt
 
@@ -102,4 +104,3 @@ def api_adocoes_por_raca(request):
                 'labels': racas}
 
         return JsonResponse(data)
-

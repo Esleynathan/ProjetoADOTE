@@ -5,6 +5,7 @@ from django.contrib import messages
 from .models import PedidoAdocao
 from datetime import datetime
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 
 def listar_pets (request):
@@ -24,50 +25,23 @@ def listar_pets (request):
 
         return render(request, 'listar_pets.html',{'pets': pets, 'racas': racas, 'cidade': cidade, 'raca_filter': raca_filter })
 
+@login_required
 def pedido_adocao(request, id_pet):
     pet = Pet.objects.filter(id=id_pet).filter(status="P")
     
     if not pet.exists():
         messages.add_message(request, constants.WARNING, 'Esse pet já foi adotado')
         return redirect('/adotar')
-    
+
+    # Impede que o dono adote o próprio pet
+    if pet.first().usuario == request.user:
+        messages.add_message(request, constants.ERROR, 'Você não pode adotar seu próprio pet.')
+        return redirect('/adotar')
+
     pedido = PedidoAdocao(pet=pet.first(),
                         usuario=request.user,
                         data=datetime.now())
-
     pedido.save()
     
     messages.add_message(request, constants.SUCCESS, 'Pedido de adoção realizado com sucesso.')
-
     return redirect('/adotar')
-
-def processa_pedido_adocao(request, id_pedido):
-    status = request.GET.get('status')
-    pedido = PedidoAdocao.objects.get(id=id_pedido)
-   
-    if status == "A":
-        pedido.status = 'AP'
-        pedido.pet.status = 'A'
-        print(pedido.pet.status)
-        string ='''Olá, sua adoção foi aprovada com suceso.'''
-
-    elif status == "R":        
-        pedido.status = "R"  
-        string ='''Olá, sua adoção foi recusada.'''
-    
-   
-    pedido.save()
-    pedido.pet.save()
-
-   
-
-    email = send_mail('Sua adoção foi processada',
-        string,
-        'esleynathan@hotmail.com',
-        [pedido.usuario.email,]
-    )
-
-    
-    messages.add_message(request, constants.SUCCESS, 'Pedido de adoção processado com sucesso.')
-    
-    return redirect('/divulgar/ver_pedido_adocao')
